@@ -51,3 +51,17 @@ plt.show()
 
 # Conclusion: The time-series plot revealed a steady increase in global CO2 emissions, with noticeable dips during economic recessions 
 # (e.g., 2008, 2020). This confirms the urgent need for policy interventions to decouple emissions from economic growth.
+
+
+
+# 2. Which countries contribute the most to CO2 emissions in 2020?
+top_emitters = data[data['Year']==2020].nlargest(10, 'CO2')[['Country','CO2']]
+plt.figure(figsize=(10,6))
+sns.barplot(x='CO2', y='Country', data=top_emitters)
+plt.title('Top 10 CO2 Emitting Countries (2020)')
+plt.show()
+
+# why 2020? - 2020 is likely the newest year with reliable data in the dataset.
+# 2020 had unique emission drops due to lockdowns (↓transport/industry).
+
+# Conclusion: China, the US, and Russia dominated emissions. This highlights the disproportionate impact of a few nations and the need for targeted mitigation strategies
