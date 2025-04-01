@@ -96,7 +96,7 @@ plt.show()
 # 4. Temperature Change Correlation
 # Is there a visible relationship between CO2 and temperature change?
 
-plt.figure(figsize=(8,5))
+plt.figure(figsize=(9,6))
 sns.scatterplot(x='CO2', y='temperature_change_from_co2', data=data, hue='Year', palette='coolwarm')
 plt.title('CO2 Emissions vs Temperature Change')
 plt.show()
