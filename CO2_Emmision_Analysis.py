@@ -93,7 +93,7 @@ plt.show()
 
 
 
-# 4. Temperature Change Correlation
+# 4. Temperature Change Relationship
 # Is there a visible relationship between CO2 and temperature change?
 
 plt.figure(figsize=(9,6))
