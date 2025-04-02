@@ -104,11 +104,11 @@ plt.show()
 
 # Conclusion: The strong positive correlation (r=0.0.89) between CO2 and temperature change empirically validates the link between emissions and global warming.
 
-#  Despite near-identical correlation scores (oil_co2: 0.955, coal_co2: 0.918), how do their emission patterns differ in the 10 highest-emitting countries?
+
+
+#5. Despite near-identical correlation scores (oil_co2: 0.955, coal_co2: 0.918), how do their emission patterns differ in the 10 highest-emitting countries?
 
 top_emitters = data[data['Year']==2020].nlargest(5, 'CO2')
-
-
 # Stacked area plot for fuel composition
 plt.figure(figsize=(12,6))
 plt.stackplot(
@@ -126,3 +126,15 @@ plt.legend(loc='upper left')
 plt.show()
 
 # Conclusion - Oil's slightly higher correlation may mask critical regional differences (e.g., coal-heavy China vs. oil-dependent Saudi Arabia). This reveals where decarbonization efforts should prioritize fuel switching.
+
+
+# 6. The Energy Efficiency Paradox
+# Why does primary_energy_consumption (0.026 correlation) show almost no link to CO₂, despite energy being the main emission source?
+
+# Calculate coal's share of total CO₂ emissions
+data['coal_share'] = (data['coal_co2'] / data['CO2']) * 100
+print(data[['Country', 'Year', 'coal_co2', 'primary_energy_consumption', 'coal_share']].head())
+
+# Summary statistics for verification
+print(data['coal_share'].describe())
+
