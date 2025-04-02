@@ -63,6 +63,7 @@ sns.barplot(x='CO2', y='Country', data=top_emitters, palette=sns.color_palette("
 plt.title('Top 10 CO2 Emitting Countries (2020)')
 plt.show()
 
+# Least emmitor
 
 least_emitters = data[data['Year'] == 2020].nsmallest(5, 'CO2')[['Country', 'CO2']]
 
@@ -102,3 +103,26 @@ plt.title('CO2 Emissions vs Temperature Change')
 plt.show()
 
 # Conclusion: The strong positive correlation (r=0.0.89) between CO2 and temperature change empirically validates the link between emissions and global warming.
+
+#  Despite near-identical correlation scores (oil_co2: 0.955, coal_co2: 0.918), how do their emission patterns differ in the 10 highest-emitting countries?
+
+top_emitters = data[data['Year']==2020].nlargest(5, 'CO2')
+
+
+# Stacked area plot for fuel composition
+plt.figure(figsize=(12,6))
+plt.stackplot(
+    top_emitters['Country'], 
+    top_emitters['coal_co2'], 
+    top_emitters['oil_co2'], 
+    top_emitters['gas_co2'],
+    labels=['Coal','Oil','Gas'],
+    colors=['#333333','#8B0000','#4682B4']
+)
+plt.title('Fossil Fuel Composition in Top 5 Emitters (2020)')
+plt.ylabel('CO₂ Emissions (Mt)')
+plt.xticks(rotation=45)
+plt.legend(loc='upper left')
+plt.show()
+
+# Conclusion - Oil's slightly higher correlation may mask critical regional differences (e.g., coal-heavy China vs. oil-dependent Saudi Arabia). This reveals where decarbonization efforts should prioritize fuel switching.
