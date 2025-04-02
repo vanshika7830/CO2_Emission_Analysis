@@ -41,7 +41,7 @@ plt.show()
 
 
 # 1. How have global CO2 emissions changed year-over-year?
-plt.figure(figsize=(12,6))
+plt.figure(figsize=(16,12))
 data.groupby('Year')['CO2'].sum().plot(marker='o', color='red')
 plt.title('Global CO2 Emissions Trend (Yearly)')
 plt.xlabel('Year')
@@ -58,7 +58,7 @@ plt.show()
 
 top_emitters = data[data['Year'] == 2020].nlargest(5, 'CO2')[['Country', 'CO2']]
 
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(16,12))
 sns.barplot(x='CO2', y='Country', data=top_emitters, palette=sns.color_palette("husl", len(top_emitters)))
 plt.title('Top 10 CO2 Emitting Countries (2020)')
 plt.show()
@@ -67,7 +67,7 @@ plt.show()
 
 least_emitters = data[data['Year'] == 2020].nsmallest(5, 'CO2')[['Country', 'CO2']]
 
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(16,12))
 sns.barplot(x='CO2', y='Country', data=least_emitters, palette=sns.color_palette("husl", len(least_emitters)))
 plt.title('Top 10 CO2 Emitting Countries (2020)')
 plt.show()
@@ -82,6 +82,7 @@ plt.show()
 
 # 3. Energy Source Contribution
 # What percentage of emissions come from coal, oil, and gas?
+plt.figure(figsize=(16,12))
 sources = ['coal_co2','oil_co2','gas_co2']
 source_contribution = data.groupby('Year')[sources].sum().iloc[-1] # Latest year
 source_contribution.plot.pie(autopct='%1.1f%%', colors=['#FFC20A','#00668E','#17BECF'])
@@ -97,7 +98,7 @@ plt.show()
 # 4. Temperature Change Relationship
 # Is there a visible relationship between CO2 and temperature change?
 
-plt.figure(figsize=(9,6))
+plt.figure(figsize=(16,12))
 sns.scatterplot(x='CO2', y='temperature_change_from_co2', data=data, hue='Year', palette='coolwarm')
 plt.title('CO2 Emissions vs Temperature Change')
 plt.show()
@@ -110,7 +111,7 @@ plt.show()
 
 top_emitters = data[data['Year']==2020].nlargest(5, 'CO2')
 # Stacked area plot for fuel composition
-plt.figure(figsize=(12,6))
+plt.figure(figsize=(16,12))
 plt.stackplot(
     top_emitters['Country'], 
     top_emitters['coal_co2'], 
@@ -144,3 +145,22 @@ data['coal_share'] = (data['coal_energy'] / data['primary_energy_consumption']) 
 
 data.dropna(subset=['coal_co2', 'primary_energy_consumption'])
 
+plt.figure(figsize=(16,12))
+sns.scatterplot(
+    data=data[data['Year'] == 1997],
+    x='primary_energy_consumption',
+    y='co2_per_gdp',
+    hue='coal_share',  
+    size='GDP',        
+    palette='viridis_r',
+    sizes=(50, 500),
+    alpha=0.7
+)
+plt.title("Energy Use vs. CO₂ Intensity Colored by Coal Dependency (1997)")
+plt.xlabel("Primary Energy Consumption (Mtoe)")
+plt.ylabel("CO₂ per GDP (kg/$)")
+plt.legend(title='% Coal in Energy Mix', bbox_to_anchor=(1.05, 1))
+plt.grid(alpha=0.2)
+plt.show()
+
+# Yellow coal independent yet high consumption of energy
