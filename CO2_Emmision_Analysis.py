@@ -138,3 +138,9 @@ print(data[['Country', 'Year', 'coal_co2', 'primary_energy_consumption', 'coal_s
 # Summary statistics for verification
 print(data['coal_share'].describe())
 
+# Example: Convert coal CO₂ to energy units (assuming 1 MtCO₂ = 0.4 Mtoe)
+data['coal_energy'] = data['coal_co2'] * 0.4
+data['coal_share'] = (data['coal_energy'] / data['primary_energy_consumption']) * 100
+
+data.dropna(subset=['coal_co2', 'primary_energy_consumption'])
+
