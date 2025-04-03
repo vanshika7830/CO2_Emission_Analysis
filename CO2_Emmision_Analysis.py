@@ -55,7 +55,6 @@ plt.show()
 
 # 2. Which countries contribute the least and most to CO2 emissions in 2020?
 
-
 top_emitters = data[data['Year'] == 2020].nlargest(5, 'CO2')[['Country', 'CO2']]
 
 plt.figure(figsize=(16,12))
@@ -107,7 +106,7 @@ plt.show()
 
 
 
-#5. Despite near-identical correlation scores (oil_co2: 0.955, coal_co2: 0.918), how do their emission patterns differ in the 10 highest-emitting countries?
+#5. Despite near-identical correlation scores (oil_co2: 0.955, coal_co2: 0.918), how do their emission patterns differ in the 5 highest-emitting countries?
 
 top_emitters = data[data['Year']==2020].nlargest(5, 'CO2')
 # Stacked area plot for fuel composition
