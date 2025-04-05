@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from sklearn.feature_extraction.text import TfidfVectorizer
 # --------------------------------------------------Reading from file----------------------------------
 data = pd.read_excel('visualizing_global_co2_data.xlsx')
 
@@ -167,3 +167,38 @@ plt.grid(alpha=0.2)
 plt.show()
 
 # Yellow coal independent yet high consumption of energy
+
+# 7. To identify which fuel types are most distinctive/significant for each country's emissions profile, beyond just absolute emission values.
+fuels = ['coal_co2', 'oil_co2', 'gas_co2']
+df_fuels = data[['Country'] + fuels].dropna()
+
+# 2. Calculate TF (Term Frequency) - Fuel share per country
+tf = df_fuels.groupby('Country')[fuels].sum()
+tf = tf.div(tf.sum(axis=1), axis=0)  # Convert to percentages
+
+# 3. Calculate IDF (Inverse Document Frequency)
+n_countries = len(tf)
+idf = np.log(n_countries / (tf > 0).sum(axis=0)) + 1  # +1 to avoid division by zero
+
+# 4. Calculate TF-IDF scores
+tfidf_scores = tf * idf.values
+
+# 5. Get top fuel for each country
+tfidf_scores['dominant_fuel'] = tfidf_scores.idxmax(axis=1)
+print(tfidf_scores.sort_values('dominant_fuel'))
+
+plt.figure(figsize=(12, 16))
+sns.scatterplot(
+    data=data,
+    x='coal_co2',
+    y='oil_co2',
+    size='gas_co2',  # Bubble size = gas emissions
+    hue='Country',   # Color by country
+    sizes=(20, 200),
+    alpha=0.7
+)
+plt.title('Coal vs. Oil CO₂ Emissions (Size = Gas Emissions)')
+plt.xlabel('Coal CO₂ (Mt)')
+plt.ylabel('Oil CO₂ (Mt)')
+plt.legend(bbox_to_anchor=(1.05, 1))
+plt.show()
