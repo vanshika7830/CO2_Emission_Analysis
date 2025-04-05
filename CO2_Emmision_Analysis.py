@@ -58,7 +58,6 @@ plt.show()
 
 
 # 2. Which countries contribute the most and least to CO2 emissions in 2020?
-
 top_emitters = data[data['Year'] == 2020].nlargest(5, 'CO2')[['Country', 'CO2']]
 
 plt.figure(figsize=(16,12))
@@ -182,6 +181,7 @@ idf = np.log(n_countries / (tf > 0).sum(axis=0)) + 1  # +1 to avoid division by 
 
 # 4. Calculate TF-IDF scores
 tfidf_scores = tf * idf.values
+
 
 # 5. Get top fuel for each country
 tfidf_scores['dominant_fuel'] = tfidf_scores.idxmax(axis=1)
