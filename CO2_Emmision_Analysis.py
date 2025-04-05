@@ -23,6 +23,9 @@ print(data.isna().sum())
 numeric_cols = data.select_dtypes(include=['number']).columns
 data[numeric_cols] = data[numeric_cols].fillna(data[numeric_cols].mean())
 
+# Dropping the unneccessary column
+# data = data.drop(['ISO_Code','temperature_change_from_ghg']) 
+
 # ----------------------------------------------------Again checking the dataset------------------------
 print(data.info())
 
@@ -34,7 +37,8 @@ print(correlations)
 
 # Visualize correlation matrix
 plt.figure(figsize=(16, 12))
-sns.heatmap(data.corr(numeric_only=True), annot=True, cmap='coolwarm')
+corr_data = data[['oil_co2', 'coal_co2', 'gas_co2', 'temperature_change_from_co2', 'Cement_CO2', 'primary_energy_consumption']]
+sns.heatmap(corr_data.corr(), annot=True, cmap='coolwarm')
 plt.show()
 
 # -------------------------------------------OBJECTIVES------------------------------------------
@@ -53,7 +57,7 @@ plt.show()
 # (e.g., 2008, 2020). This confirms the urgent need for policy interventions to decouple emissions from economic growth.
 
 
-# 2. Which countries contribute the least and most to CO2 emissions in 2020?
+# 2. Which countries contribute the most and least to CO2 emissions in 2020?
 
 top_emitters = data[data['Year'] == 2020].nlargest(5, 'CO2')[['Country', 'CO2']]
 
@@ -80,7 +84,7 @@ plt.show()
 
 
 # 3. Energy Source Contribution
-# What percentage of emissions come from coal, oil, and gas?
+# What percentage of emissions come from coal, oil, and gas and its impacts?
 plt.figure(figsize=(16,12))
 sources = ['coal_co2','oil_co2','gas_co2']
 source_contribution = data.groupby('Year')[sources].sum().iloc[-1] # Latest year
@@ -95,7 +99,7 @@ plt.show()
 
 
 # 4. Temperature Change Relationship
-# Is there a visible relationship between CO2 and temperature change?
+#Relationship between CO2 and temperature change?
 
 plt.figure(figsize=(16,12))
 sns.scatterplot(x='CO2', y='temperature_change_from_co2', data=data, hue='Year', palette='coolwarm')
