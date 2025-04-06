@@ -58,24 +58,18 @@ plt.show()
 
 
 # 2. Which countries contribute the most and least to CO2 emissions in 2020?
-
 top_emitters = data[data['Year'] == 2020].nlargest(5, 'CO2')[['Country', 'CO2']]
-
 plt.figure(figsize=(16,12))
 sns.barplot(x='CO2', y='Country', data=top_emitters, palette=sns.color_palette("husl", len(top_emitters)))
-plt.title('Top 10 CO2 Emitting Countries (2020)')
+plt.title('Top 5 CO2 Emitting Countries (2020)')
 plt.show()
 
 # Least emmitor
-
 least_emitters = data[data['Year'] == 2020].nsmallest(5, 'CO2')[['Country', 'CO2']]
-
 plt.figure(figsize=(16,12))
 sns.barplot(x='CO2', y='Country', data=least_emitters, palette=sns.color_palette("husl", len(least_emitters)))
-plt.title('Top 10 CO2 Emitting Countries (2020)')
+plt.title('Bottom 5 CO2 Emitting Countries (2020)')
 plt.show()
-
-
 # why 2020? - 2020 is likely the newest year with reliable data in the dataset.
 # 2020 had unique emission drops due to lockdowns (↓transport/industry).
 
@@ -93,25 +87,21 @@ source_contribution.plot.pie(autopct='%1.1f%%', colors=['#FFC20A','#00668E','#17
 plt.title('Global CO2 Emissions by Energy Source (2020)')
 plt.ylabel('')
 plt.show()
-
 # Conclusion: Coal accounted for 66% of emissions, followed by oil (21.9%) and gas (12.1%). This underscores coal as the most critical target for transitioning to cleaner energy.
 
 
 
 # 4. Temperature Change Relationship
 #Relationship between CO2 and temperature change?
-
 plt.figure(figsize=(16,12))
 sns.scatterplot(x='CO2', y='temperature_change_from_co2', data=data, hue='Year', palette='coolwarm')
 plt.title('CO2 Emissions vs Temperature Change')
 plt.show()
-
 # Conclusion: The strong positive correlation (r=0.0.89) between CO2 and temperature change empirically validates the link between emissions and global warming.
 
 
 
 #5. Despite near-identical correlation scores (oil_co2: 0.955, coal_co2: 0.918), how do their emission patterns differ in the 5 highest-emitting countries?
-
 top_emitters = data[data['Year']==2020].nlargest(5, 'CO2')
 # Stacked area plot for fuel composition
 plt.figure(figsize=(16,12))
@@ -128,13 +118,11 @@ plt.ylabel('CO₂ Emissions (Mt)')
 plt.xticks(rotation=45)
 plt.legend(loc='upper left')
 plt.show()
-
 # Conclusion - Oil's slightly higher correlation may mask critical regional differences (e.g., coal-heavy China vs. oil-dependent Saudi Arabia). This reveals where decarbonization efforts should prioritize fuel switching.
 
 
 # 6. The Energy Efficiency Paradox
 # Why does primary_energy_consumption (0.026 correlation) show almost no link to CO₂, despite energy being the main emission source?
-
 # Calculate coal's share of total CO₂ emissions
 data['coal_share'] = (data['coal_co2'] / data['CO2']) * 100
 print(data[['Country', 'Year', 'coal_co2', 'primary_energy_consumption', 'coal_share']].head())
@@ -145,9 +133,7 @@ print(data['coal_share'].describe())
 # Example: Convert coal CO₂ to energy units (assuming 1 MtCO₂ = 0.4 Mtoe)
 data['coal_energy'] = data['coal_co2'] * 0.4
 data['coal_share'] = (data['coal_energy'] / data['primary_energy_consumption']) * 100
-
 data.dropna(subset=['coal_co2', 'primary_energy_consumption'])
-
 plt.figure(figsize=(16,12))
 sns.scatterplot(
     data=data[data['Year'] == 1997],
@@ -164,26 +150,26 @@ plt.xlabel("Primary Energy Consumption (Mtoe)")
 plt.ylabel("CO₂ per GDP (kg/$)")
 plt.legend(title='% Coal in Energy Mix', bbox_to_anchor=(1.05, 1))
 plt.grid(alpha=0.2)
-plt.show()
+plt.show()   # Yellow coal independent yet high consumption of energy
 
-# Yellow coal independent yet high consumption of energy
+
 
 # 7. To identify which fuel types are most distinctive/significant for each country's emissions profile, beyond just absolute emission values.
 fuels = ['coal_co2', 'oil_co2', 'gas_co2']
 df_fuels = data[['Country'] + fuels].dropna()
 
-# 2. Calculate TF (Term Frequency) - Fuel share per country
+#Calculate TF (Term Frequency) - Fuel share per country
 tf = df_fuels.groupby('Country')[fuels].sum()
 tf = tf.div(tf.sum(axis=1), axis=0)  # Convert to percentages
 
-# 3. Calculate IDF (Inverse Document Frequency)
+#Calculate IDF (Inverse Document Frequency)
 n_countries = len(tf)
 idf = np.log(n_countries / (tf > 0).sum(axis=0)) + 1  # +1 to avoid division by zero
 
-# 4. Calculate TF-IDF scores
+#Calculate TF-IDF scores
 tfidf_scores = tf * idf.values
 
-# 5. Get top fuel for each country
+# 8. Get top fuel for each country
 tfidf_scores['dominant_fuel'] = tfidf_scores.idxmax(axis=1)
 print(tfidf_scores.sort_values('dominant_fuel'))
 
@@ -200,5 +186,5 @@ sns.scatterplot(
 plt.title('Coal vs. Oil CO₂ Emissions (Size = Gas Emissions)')
 plt.xlabel('Coal CO₂ (Mt)')
 plt.ylabel('Oil CO₂ (Mt)')
-plt.legend(bbox_to_anchor=(1.05, 1))
+plt.legend(bbox_to_anchor=(1, 1))
 plt.show()
