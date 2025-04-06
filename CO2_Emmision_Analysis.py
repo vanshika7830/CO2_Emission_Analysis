@@ -169,7 +169,7 @@ idf = np.log(n_countries / (tf > 0).sum(axis=0)) + 1  # +1 to avoid division by 
 #Calculate TF-IDF scores
 tfidf_scores = tf * idf.values
 
-# 8. Get top fuel for each country
+# 5. Get top fuel for each country
 tfidf_scores['dominant_fuel'] = tfidf_scores.idxmax(axis=1)
 print(tfidf_scores.sort_values('dominant_fuel'))
 
