@@ -45,6 +45,7 @@ print("Correlation")
 correlations = data.corr(numeric_only=True)['CO2'].sort_values(ascending=False)
 print(correlations)
 
+
 # Visualize correlation matrix
 plt.figure(figsize=(16, 12))
 corr_data = data[['oil_co2', 'coal_co2', 'gas_co2', 'temperature_change_from_co2', 'Cement_CO2', 'primary_energy_consumption']]
