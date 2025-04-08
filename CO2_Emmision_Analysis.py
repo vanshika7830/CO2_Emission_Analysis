@@ -9,13 +9,20 @@ data = pd.read_excel('visualizing_global_co2_data.xlsx')
 
 # -------------------------------------------------Summary---------------------------------------------
 #Summarize the class-type, range-index or range of Index, column details, data type, memory
+print("Information regarding null values\n")
 print(data.info()) 
 #Retrieve First 5 top values
+print("\n\n")
+print("First 5 values\n")
 print(data.head())  
-#Retrieve Last 5 bottom values                                     
+print("\n\n")
+#Retrieve Last 5 bottom values
+print("First 5 values\n")                                     
 print(data.tail())    
   
 #-------------------------------------------------Stastical Data----------------------------------------
+print("\n\n")
+print("Summary of dataset")
 print(data.describe()) 
 
 # ------------------------------------------------- Handling missing values-----------------------------
@@ -27,11 +34,14 @@ data[numeric_cols] = data[numeric_cols].fillna(data[numeric_cols].mean())
 # data = data.drop(['ISO_Code','temperature_change_from_ghg']) 
 
 # ----------------------------------------------------Again checking the dataset------------------------
+print("\n\n")
 print(data.info())
 
 # ------------------------------------------Checking correlation to get the insight----------------------
 
 # Calculate correlations with target variable (e.g., CO2)
+print("\n\n")
+print("Correlation")
 correlations = data.corr(numeric_only=True)['CO2'].sort_values(ascending=False)
 print(correlations)
 
@@ -41,9 +51,41 @@ corr_data = data[['oil_co2', 'coal_co2', 'gas_co2', 'temperature_change_from_co2
 sns.heatmap(corr_data.corr(), annot=True, cmap='coolwarm')
 plt.show()
 
+# Outliers Detection
+print("\n\n")
+# Columns to check for outliers
+columns = ['GDP', 'Cement_CO2', 'primary_energy_consumption', 
+           'temperature_change_from_ghg', 'CO2','coal_co2','gas_co2','oil_co2']
+
+outlier_iqr_summary = {}
+
+for col in columns:
+    if col not in data.columns:
+        continue
+    series = data[col].dropna()  # Remove NaN
+    Q1 = series.quantile(0.25)
+    Q3 = series.quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    outliers = series[(series < lower_bound) | (series > upper_bound)]
+    
+    outlier_iqr_summary[col] = {
+        'IQR': round(IQR, 2),
+        'Lower Bound': round(lower_bound, 2),
+        'Upper Bound': round(upper_bound, 2),
+        'Outlier Count': outliers.count(),
+        'Outlier %': round(outliers.count() / len(series) * 100, 2)
+    }
+
+# Display result as a DataFrame
+iqr_outlier_df = pd.DataFrame(outlier_iqr_summary).T
+print("Outliers detected using IQR method:\n")
+print(iqr_outlier_df)
+
 # -------------------------------------------OBJECTIVES------------------------------------------
 
-
+print("\n\n")
 # 1. How have global CO2 emissions changed year-over-year?
 plt.figure(figsize=(16,12))
 data.groupby('Year')['CO2'].sum().plot(marker='o', color='red')
@@ -60,14 +102,14 @@ plt.show()
 # 2. Which countries contribute the most and least to CO2 emissions in 2020?
 top_emitters = data[data['Year'] == 2020].nlargest(5, 'CO2')[['Country', 'CO2']]
 plt.figure(figsize=(16,12))
-sns.barplot(x='CO2', y='Country', data=top_emitters, palette=sns.color_palette("husl", len(top_emitters)))
+sns.barplot(x='CO2', y='Country', data=top_emitters, hue='Country',palette=sns.color_palette("husl", len(top_emitters)))
 plt.title('Top 5 CO2 Emitting Countries (2020)')
 plt.show()
 
 # Least emmitor
 least_emitters = data[data['Year'] == 2020].nsmallest(5, 'CO2')[['Country', 'CO2']]
 plt.figure(figsize=(16,12))
-sns.barplot(x='CO2', y='Country', data=least_emitters, palette=sns.color_palette("husl", len(least_emitters)))
+sns.barplot(x='CO2', y='Country', data=least_emitters, hue='Country',palette=sns.color_palette("husl", len(least_emitters)))
 plt.title('Bottom 5 CO2 Emitting Countries (2020)')
 plt.show()
 # why 2020? - 2020 is likely the newest year with reliable data in the dataset.
