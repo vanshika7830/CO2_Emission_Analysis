@@ -146,7 +146,7 @@ source_contribution.plot.pie(autopct='%1.1f%%', colors=['#FFC20A','#00668E','#17
 plt.title('Global CO2 Emissions by Energy Source (2020)')
 plt.ylabel('')
 plt.show()
-# Conclusion: Coal accounted for 66% of emissions, followed by oil (21.9%) and gas (12.1%). This underscores coal as the most critical target for transitioning to cleaner energy.
+# Conclusion: Coal accounted for highest of emissions, followed by oil and gas. This underscores coal as the most critical target for transitioning to cleaner energy.
 
 
 
@@ -163,7 +163,7 @@ for year in selected_years:
     plt.ylabel('Temperature Change from CO₂')
     plt.grid(True)
     plt.show()
-# Conclusion: The strong positive correlation (r=0.0.89) between CO2 and temperature change empirically validates the link between emissions and global warming.
+# Conclusion: The strong positive correlation between CO2 and temperature change empirically validates the link between emissions and global warming.
 
 
 #5. Despite near-identical correlation scores, how do their emission patterns differ in the 5 highest-emitting countries?
