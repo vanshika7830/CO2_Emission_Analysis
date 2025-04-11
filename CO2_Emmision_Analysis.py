@@ -152,14 +152,22 @@ plt.show()
 
 # 4. Temperature Change Relationship
 #Relationship between CO2 and temperature change?
-plt.figure(figsize=(16,12))
-sns.scatterplot(x='CO2', y='temperature_change_from_co2', data=data, hue='Year', palette='coolwarm')
-plt.title('CO2 Emissions vs Temperature Change')
-plt.show()
-# Conclusion: The strong positive correlation (r=0.0.89) between CO2 and temperature change empirically validates the link between emissions and global warming.
+years = sorted(data['Year'].unique())
+selected_years = years[::10]  # Every 10th year
+
+for year in selected_years:
+    yearly_data = data[data['Year'] == year]
+    plt.figure(figsize=(8, 6))
+    sns.scatterplot(data=yearly_data, x='CO2', y='temperature_change_from_co2')
+    plt.title(f'CO₂ vs Temperature Change - {year}')
+    plt.xlabel('CO₂ Emissions (Mt)')
+    plt.ylabel('Temperature Change from CO₂')
+    plt.grid(True)
+    plt.show()
+# Conclusion: The strong positive correlation between CO2 and temperature change empirically validates the link between emissions and global warming.
 
 
-#5. Despite near-identical correlation scores, how do their emission patterns differ in the 5 highest-emitting countries?
+#5. Despite near-identical correlation scores of coal_co2 and oil_co2, how do their emission patterns differ in the 5 highest-emitting countries?
 top_emitters = data[data['Year']==2020].nlargest(5, 'CO2')
 # Stacked area plot for fuel composition
 plt.figure(figsize=(16,12))
@@ -182,34 +190,27 @@ plt.show()
 # 6. The Energy Efficiency Paradox
 # Why does primary_energy_consumption (0.025977 correlation) show almost no link to CO₂, despite energy being the main emission source?
 # Calculate coal's share of total CO₂ emissions
-data['coal_share'] = (data['coal_co2'] / data['CO2']) * 100
-print(data[['Country', 'Year', 'coal_co2', 'primary_energy_consumption', 'coal_share']].head())
+coal_energy = data['coal_co2'] * 0.4
+data['coal_share'] = (coal_energy / data['primary_energy_consumption']) * 100
 
-# Summary statistics for verification
-print(data['coal_share'].describe())
-
-# Example: Convert coal CO₂ to energy units (assuming 1 MtCO₂ = 0.4 Mtoe)
-data['coal_energy'] = data['coal_co2'] * 0.4
-data['coal_share'] = (data['coal_energy'] / data['primary_energy_consumption']) * 100
-data.dropna(subset=['coal_co2', 'primary_energy_consumption'])
 plt.figure(figsize=(16,12))
 sns.scatterplot(
     data=data[data['Year'] == 1997],
     x='primary_energy_consumption',
     y='co2_per_gdp',
-    hue='coal_share',  
-    size='GDP',        
+    hue='CO2',
+    size='GDP',
     palette='viridis_r',
     sizes=(50, 500),
     alpha=0.7
 )
-plt.title("Energy Use vs. CO₂ Intensity Colored by Coal Dependency (1997)")
+plt.title("Energy Use vs. CO₂ Intensity")
 plt.xlabel("Primary Energy Consumption (Mtoe)")
 plt.ylabel("CO₂ per GDP (kg/$)")
-plt.legend(title='% Coal in Energy Mix', bbox_to_anchor=(1.05, 1))
+plt.legend(title='% CO2 in Energy Mix', bbox_to_anchor=(1.05, 1))
 plt.grid(alpha=0.2)
-plt.show()   # Yellow coal independent yet high consumption of energy
-
+plt.show()
+# Conclusion - 
 
 
 # 7. To identify which fuel types are most distinctive/significant for each country's emissions profile, to conclude emmision rates.
@@ -234,7 +235,4 @@ plt.tight_layout()
 plt.show()
 
 # Conclusion
-# The fuel type used in each country strongly determines the CO₂ emission rate. Even if two countries use the same amount of energy:
-
-# Conclusion
-# The fuel type used in each country strongly determines the CO₂ emission rate. Even if two countries use the same amount of energy:
+# The fuel type used in each country strongly determines the CO₂ emission rate. Even if two countries use the same amount of energy
