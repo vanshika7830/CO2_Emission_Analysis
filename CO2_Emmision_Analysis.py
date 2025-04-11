@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.feature_extraction.text import TfidfVectorizer
+
 # --------------------------------------------------Reading from file----------------------------------
 data = pd.read_excel('visualizing_global_co2_data.xlsx')
 
@@ -62,18 +62,6 @@ print(data.info())
 
 # ------------------------------------------Checking correlation to get the insight----------------------
 
-# Calculate correlations with target variable (e.g., CO2)
-print("\n\n")
-print("Correlation")
-correlations = data.corr(numeric_only=True)['CO2'].sort_values(ascending=False)
-print(correlations)
-
-
-# Visualize correlation matrix
-plt.figure(figsize=(16, 12))
-corr_data = data[['oil_co2', 'coal_co2', 'gas_co2', 'temperature_change_from_co2', 'Cement_CO2', 'primary_energy_consumption']]
-sns.heatmap(corr_data.corr(), annot=True, cmap='coolwarm')
-plt.show()
 
 # Outliers Detection
 print("\n\n")
@@ -102,7 +90,18 @@ print("\nOutliers Detected Using IQR:")
 print(iqr_outlier_df)
 print("\n\n")
 
+# Calculate correlations with target variable (e.g., CO2)
+print("\n\n")
+print("Correlation")
+correlations = data.corr(numeric_only=True)['CO2'].sort_values(ascending=False)
+print(correlations)
 
+
+# Visualize correlation matrix
+plt.figure(figsize=(16, 12))
+corr_data = data[['oil_co2', 'coal_co2', 'gas_co2', 'temperature_change_from_co2', 'Cement_CO2', 'primary_energy_consumption']]
+sns.heatmap(corr_data.corr(), annot=True, cmap='coolwarm')
+plt.show()
 # -------------------------------------------OBJECTIVES------------------------------------------
 
 # 1. How have global CO2 emissions changed year-over-year?
@@ -120,7 +119,7 @@ plt.show()
 
 # 2. Which countries contribute the most and least to CO2 emissions in 2020?
 top_emitters = data[data['Year'] == 2020].nlargest(5, 'CO2')[['Country', 'CO2']]
-plt.figure(figsize=(16,12))
+plt.figure(figsize=(16, 12))
 sns.barplot(x='CO2', y='Country', data=top_emitters, hue='Country',palette=sns.color_palette("husl", len(top_emitters)))
 plt.title('Top 5 CO2 Emitting Countries (2020)')
 plt.tight_layout()
@@ -128,7 +127,7 @@ plt.show()
 
 # Least emmitor
 least_emitters = data[data['Year'] == 2020].nsmallest(5, 'CO2')[['Country', 'CO2']]
-plt.figure(figsize=(16,12))
+plt.figure(figsize=(16, 12))
 sns.barplot(x='CO2', y='Country', data=least_emitters, hue='Country',palette=sns.color_palette("husl", len(least_emitters)))
 plt.title('Bottom 5 CO2 Emitting Countries (2020)')
 plt.tight_layout()
@@ -141,7 +140,7 @@ plt.show()
 
 # 3. Energy Source Contribution
 # What percentage of emissions come from coal, oil, and gas and its impacts?
-plt.figure(figsize=(16,12))
+plt.figure(figsize=(16, 12))
 sources = ['coal_co2','oil_co2','gas_co2']
 source_contribution = data.groupby('Year')[sources].sum().iloc[-1] # Latest year
 source_contribution.plot.pie(autopct='%1.1f%%', colors=['#FFC20A','#00668E','#17BECF'])
@@ -159,7 +158,7 @@ selected_years = years[::10]  # Every 10th year
 
 for year in selected_years:
     yearly_data = data[data['Year'] == year]
-    plt.figure(figsize=(16,12))
+    plt.figure(figsize=(6,4))
     sns.scatterplot(data=yearly_data, x='CO2', y='temperature_change_from_co2')
     plt.title(f'CO₂ vs Temperature Change - {year}')
     plt.xlabel('CO₂ Emissions (Mt)')
@@ -173,7 +172,7 @@ for year in selected_years:
 #5. Despite near-identical correlation scores of coal_co2 and oil_co2, how do their emission patterns differ in the 5 highest-emitting countries?
 top_emitters = data[data['Year']==2020].nlargest(5, 'CO2')
 # Stacked area plot for fuel composition
-plt.figure(figsize=(16,12))
+plt.figure(figsize=(16, 12))
 plt.stackplot(
     top_emitters['Country'], 
     top_emitters['coal_co2'], 
@@ -196,7 +195,7 @@ plt.show()
 # Calculate coal's share of total CO₂ emissions
 coal_energy = data['coal_co2'] * 0.4
 data['coal_share'] = (coal_energy / data['primary_energy_consumption']) * 100
-plt.figure(figsize=(16,12))
+plt.figure(figsize=(16, 12))
 sns.scatterplot(
     data=data[data['Year'] == 1997],
     x='primary_energy_consumption',
@@ -218,12 +217,12 @@ plt.show()
 # A country burning coal for energy will emit far more CO₂ than one using hydro, wind, or nuclear — even if they consume the same energy.
 
 
-# 7. To identify which fuel types are most distinctive/significant for each country's emissions profile, to conclude emmision rates.
+# 7. To identify which fuel types are most distinctive/significant for top 10 country's emissions profile, to conclude emmision rates.
 fuels = ['coal_co2', 'oil_co2', 'gas_co2']
 top_emitters = data[data['Year'] == 2020].groupby('Country')['CO2'].sum().nlargest(10).index
 top_data = data[data['Country'].isin(top_emitters) & (data['Year'] == 2020)]
 fuel_summary = top_data.groupby('Country')[fuels].sum()
-fuel_summary.plot(kind='bar', stacked=True, figsize=(16, 10), colormap='Set2')
+fuel_summary.plot(kind='bar', stacked=True, figsize=(16, 12), colormap='Set2')
 plt.title("Fuel Type Contribution in Top 10 CO₂ Emitting Countries (2020)")
 plt.ylabel("Emissions (Mt)")
 plt.xlabel("Country")
