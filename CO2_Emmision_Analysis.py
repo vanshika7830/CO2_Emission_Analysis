@@ -101,6 +101,8 @@ iqr_outlier_df = pd.DataFrame(outlier_iqr_summary).T
 print("\nOutliers Detected Using IQR:")
 print(iqr_outlier_df)
 print("\n\n")
+
+
 # -------------------------------------------OBJECTIVES------------------------------------------
 
 # 1. How have global CO2 emissions changed year-over-year?
@@ -110,8 +112,8 @@ plt.title('Global CO2 Emissions Trend (Yearly)')
 plt.xlabel('Year')
 plt.ylabel('CO2 Emissions (Million Tonnes)')
 plt.grid()
+plt.tight_layout()
 plt.show()
-
 # Conclusion: The time-series plot revealed a steady increase in global CO2 emissions, with noticeable dips during economic recessions 
 # (e.g., 2008, 2020). This confirms the urgent need for policy interventions to decouple emissions from economic growth.
 
@@ -121,6 +123,7 @@ top_emitters = data[data['Year'] == 2020].nlargest(5, 'CO2')[['Country', 'CO2']]
 plt.figure(figsize=(16,12))
 sns.barplot(x='CO2', y='Country', data=top_emitters, hue='Country',palette=sns.color_palette("husl", len(top_emitters)))
 plt.title('Top 5 CO2 Emitting Countries (2020)')
+plt.tight_layout()
 plt.show()
 
 # Least emmitor
@@ -128,10 +131,10 @@ least_emitters = data[data['Year'] == 2020].nsmallest(5, 'CO2')[['Country', 'CO2
 plt.figure(figsize=(16,12))
 sns.barplot(x='CO2', y='Country', data=least_emitters, hue='Country',palette=sns.color_palette("husl", len(least_emitters)))
 plt.title('Bottom 5 CO2 Emitting Countries (2020)')
+plt.tight_layout()
 plt.show()
 # why 2020? - 2020 is likely the newest year with reliable data in the dataset.
 # 2020 had unique emission drops due to lockdowns (↓transport/industry).
-
 # Conclusion: Asia, China, US dominated emissions. This highlights the disproportionate impact of a few nations and the need for targeted mitigation strategies
 # Cape verde, malta, malawi, rwanda, chad have least emmision
 
@@ -142,12 +145,11 @@ plt.figure(figsize=(16,12))
 sources = ['coal_co2','oil_co2','gas_co2']
 source_contribution = data.groupby('Year')[sources].sum().iloc[-1] # Latest year
 source_contribution.plot.pie(autopct='%1.1f%%', colors=['#FFC20A','#00668E','#17BECF'])
-
 plt.title('Global CO2 Emissions by Energy Source (2020)')
 plt.ylabel('')
+plt.tight_layout()
 plt.show()
 # Conclusion: Coal accounted for highest of emissions, followed by oil and gas. This underscores coal as the most critical target for transitioning to cleaner energy.
-
 
 
 # 4. Temperature Change Relationship
@@ -157,12 +159,13 @@ selected_years = years[::10]  # Every 10th year
 
 for year in selected_years:
     yearly_data = data[data['Year'] == year]
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(16,12))
     sns.scatterplot(data=yearly_data, x='CO2', y='temperature_change_from_co2')
     plt.title(f'CO₂ vs Temperature Change - {year}')
     plt.xlabel('CO₂ Emissions (Mt)')
     plt.ylabel('Temperature Change from CO₂')
     plt.grid(True)
+    plt.tight_layout()
     plt.show()
 # Conclusion: The strong positive correlation between CO2 and temperature change empirically validates the link between emissions and global warming.
 
@@ -183,6 +186,7 @@ plt.title('Fossil Fuel Composition in Top 5 Emitters (2020)')
 plt.ylabel('CO₂ Emissions (Mt)')
 plt.xticks(rotation=45)
 plt.legend(loc='upper left')
+plt.tight_layout()
 plt.show()
 # Conclusion - Oil's slightly higher correlation may mask critical regional differences (e.g., coal-heavy China vs. oil-dependent Saudi Arabia). This reveals where decarbonization efforts should prioritize fuel switching.
 
@@ -192,7 +196,6 @@ plt.show()
 # Calculate coal's share of total CO₂ emissions
 coal_energy = data['coal_co2'] * 0.4
 data['coal_share'] = (coal_energy / data['primary_energy_consumption']) * 100
-
 plt.figure(figsize=(16,12))
 sns.scatterplot(
     data=data[data['Year'] == 1997],
@@ -209,22 +212,17 @@ plt.xlabel("Primary Energy Consumption (Mtoe)")
 plt.ylabel("CO₂ per GDP (kg/$)")
 plt.legend(title='% CO2 in Energy Mix', bbox_to_anchor=(1.05, 1))
 plt.grid(alpha=0.2)
+plt.tight_layout()
 plt.show()
 # Conclusion - Primary energy consumption alone doesn’t predict CO₂ emissions well because it ignores the energy source.
 # A country burning coal for energy will emit far more CO₂ than one using hydro, wind, or nuclear — even if they consume the same energy.
 
 
 # 7. To identify which fuel types are most distinctive/significant for each country's emissions profile, to conclude emmision rates.
-
-# 5. Get top fuel for each country
 fuels = ['coal_co2', 'oil_co2', 'gas_co2']
 top_emitters = data[data['Year'] == 2020].groupby('Country')['CO2'].sum().nlargest(10).index
 top_data = data[data['Country'].isin(top_emitters) & (data['Year'] == 2020)]
-
-# Aggregate their fuel emissions
 fuel_summary = top_data.groupby('Country')[fuels].sum()
-
-# Plot as stacked bar chart
 fuel_summary.plot(kind='bar', stacked=True, figsize=(16, 10), colormap='Set2')
 plt.title("Fuel Type Contribution in Top 10 CO₂ Emitting Countries (2020)")
 plt.ylabel("Emissions (Mt)")
