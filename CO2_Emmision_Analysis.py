@@ -210,7 +210,8 @@ plt.ylabel("CO₂ per GDP (kg/$)")
 plt.legend(title='% CO2 in Energy Mix', bbox_to_anchor=(1.05, 1))
 plt.grid(alpha=0.2)
 plt.show()
-# Conclusion - 
+# Conclusion - Primary energy consumption alone doesn’t predict CO₂ emissions well because it ignores the energy source.
+# A country burning coal for energy will emit far more CO₂ than one using hydro, wind, or nuclear — even if they consume the same energy.
 
 
 # 7. To identify which fuel types are most distinctive/significant for each country's emissions profile, to conclude emmision rates.
