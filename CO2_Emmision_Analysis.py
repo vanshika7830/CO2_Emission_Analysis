@@ -146,23 +146,16 @@ source_contribution.plot.pie(autopct='%1.1f%%', colors=['#FFC20A','#00668E','#17
 plt.title('Global CO2 Emissions by Energy Source (2020)')
 plt.ylabel('')
 plt.show()
-# Conclusion: Coal accounted for 66% of emissions, followed by oil (21.9%) and gas (12.1%). This underscores coal as the most critical target for transitioning to cleaner energy.
+# Conclusion: Coal accounted for highest of emissions, followed by oil and gas. This underscores coal as the most critical target for transitioning to cleaner energy.
 
 
 
 # 4. Temperature Change Relationship
-years = sorted(data['Year'].unique())
-selected_years = years[::10]  # Every 30th year
-
-for year in selected_years:
-    yearly_data = data[data['Year'] == year]
-    plt.figure(figsize=(8, 6))
-    sns.scatterplot(data=yearly_data, x='CO2', y='temperature_change_from_co2')
-    plt.title(f'CO₂ vs Temperature Change - {year}')
-    plt.xlabel('CO₂ Emissions (Mt)')
-    plt.ylabel('Temperature Change from CO₂')
-    plt.grid(True)
-    plt.show()
+#Relationship between CO2 and temperature change?
+plt.figure(figsize=(16,12))
+sns.scatterplot(x='CO2', y='temperature_change_from_co2', data=data, hue='Year', palette='coolwarm')
+plt.title('CO2 Emissions vs Temperature Change')
+plt.show()
 # Conclusion: The strong positive correlation (r=0.0.89) between CO2 and temperature change empirically validates the link between emissions and global warming.
 
 
@@ -239,6 +232,9 @@ plt.xticks(rotation=45)
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
+# Conclusion
+# The fuel type used in each country strongly determines the CO₂ emission rate. Even if two countries use the same amount of energy:
 
 # Conclusion
 # The fuel type used in each country strongly determines the CO₂ emission rate. Even if two countries use the same amount of energy:
