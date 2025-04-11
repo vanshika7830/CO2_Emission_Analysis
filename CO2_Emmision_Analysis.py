@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.feature_extraction.text import TfidfVectorizer
 # --------------------------------------------------Reading from file----------------------------------
-data = pd.read_excel('visualizing_global_co2_dataa.xlsx')
+data = pd.read_excel('visualizing_global_co2_data.xlsx')
 
 
 # -------------------------------------------------Summary---------------------------------------------
@@ -27,7 +27,7 @@ print(data.describe())
 
 # ------------------------------------------------Data cleaning-----------------------------------------
 columns_to_keep = [
-    'Country', 'Year', 'ISO_Code', 'Population', 'GDP', 'Cement_CO2', 'CO2',
+    'Country', 'Year', 'Population', 'GDP', 'Cement_CO2', 'CO2',
     'co2_per_capita', 'co2_per_gdp', 'coal_co2', 'gas_co2', 'oil_co2',
     'primary_energy_consumption', 'temperature_change_from_co2',
     'temperature_change_from_ghg'
